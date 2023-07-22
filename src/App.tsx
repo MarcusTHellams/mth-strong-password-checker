@@ -5,6 +5,7 @@ import {
   Container,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -12,6 +13,11 @@ import {
   List,
   ListIcon,
   ListItem,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
   VisuallyHidden,
 } from '@chakra-ui/react';
 import passwordValidator from 'password-validator';
@@ -25,6 +31,7 @@ import {
 } from 'react-icons/ai';
 import { type Modifier, usePopper } from 'react-popper';
 import * as yup from 'yup';
+import zxcvbn from 'zxcvbn';
 
 type FormValues = {
   email: string;
@@ -225,9 +232,11 @@ type PassWordValidation = {
 function App() {
   const [showPassword, _setShowPassword] = useState(false);
   const [showConstraints, _setShowConstraints] = useState(false);
+  const [passwordScore, setPasswordScore] = useState<0 | 1 | 2 | 3 | 4>(0);
   const [passWorldValidations, setPassWorldValidations] = useState<
     PassWordValidation[]
   >([]);
+  console.log('passwordScore: ', passwordScore);
 
   const setShowPassword = () => {
     _setShowPassword((prev) => !prev);
@@ -252,6 +261,11 @@ function App() {
 
   useEffect(() => {
     const list = validatePassword(passWordValue);
+    if (passWordValue) {
+      const score = zxcvbn(passWordValue).score;
+      setPasswordScore(score);
+    }
+
     setPassWorldValidations(list);
   }, [passWordValue]);
 
@@ -285,6 +299,15 @@ function App() {
 
   const password = register('password');
 
+  const sliderColorScheme = {
+    0: 'red',
+    1: 'red',
+    2: 'yellow',
+    3: 'yellow',
+    4: 'green',
+  };
+
+
   return (
     <Container mt="16" maxW="container.sm">
       <chakra.form noValidate onSubmit={submitHandler}>
@@ -295,6 +318,21 @@ function App() {
         </FormControl>
         <FormControl mb="4" isInvalid={!!errors.password} isRequired>
           <FormLabel>Password</FormLabel>
+          <Slider
+            value={passwordScore}
+            aria-label="slider-ex-1"
+            colorScheme={sliderColorScheme[passwordScore]}
+            min={0}
+            max={4}
+            step={1}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+          </Slider>
+          {/* <FormHelperText textAlign="center" mt="-1.5" mb="3">
+            Hello
+          </FormHelperText> */}
           <InputGroup>
             <Input
               {...password}
