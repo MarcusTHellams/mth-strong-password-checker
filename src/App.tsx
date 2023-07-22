@@ -271,7 +271,7 @@ function App() {
     popperElement,
     {
       modifiers: [
-        sameWidth as Partial<Modifier<unknown, object>>,
+        sameWidth as unknown as Partial<Modifier<unknown, object>>,
         {
           name: 'offset',
           options: {
