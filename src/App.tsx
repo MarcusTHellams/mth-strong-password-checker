@@ -108,17 +108,40 @@ const useYupValidationResolver = () =>
     }
   }, []);
 
+type State = {
+  state: {
+    elements: {
+      reference: {
+        offsetWidth: string;
+      };
+      popper: {
+        style: {
+          width: string;
+        };
+      };
+    };
+    rects: {
+      reference: {
+        width: string;
+      };
+    };
+    styles: {
+      popper: {
+        width: string;
+      };
+    };
+  };
+};
+
 const sameWidth = {
   name: 'sameWidth',
   enabled: true,
   phase: 'beforeWrite',
   requires: ['computeStyles'],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fn: ({ state }: any) => {
+  fn: ({ state }: State) => {
     state.styles.popper.width = `${state.rects.reference.width}px`;
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  effect: ({ state }: any) => {
+  effect: ({ state }: State) => {
     state.elements.popper.style.width = `${state.elements.reference.offsetWidth}px`;
   },
 };
